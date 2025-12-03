@@ -1,7 +1,12 @@
 const fs = require('fs').promises;
 
+// get an amount of data IDs (as '10-20,100-5555').
+// read it and brows all inner number (for eatch pear of IDs, brows all value between, including the starting and ending ones).
+// sum all IDs brows who is miroring (like '2525' because is miroring of '25' and '25').
+// (sum the ID, not the splited miroring image).
+// find the sum.
 
-
+// read file.
 async function readFileInput(){
     let path = `02/input.txt`;
     let output = null;

@@ -1,7 +1,8 @@
 const fs = require('fs').promises;
 
+// now, sum every IDs who has a pattern on it (not only 2 time but eatch time, like '555', because it's 3 time '5').
 
-
+// read file.
 async function readFileInput(){
     let path = `02/input.txt`;
     let output = null;

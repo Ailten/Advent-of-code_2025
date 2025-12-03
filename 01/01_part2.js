@@ -1,8 +1,6 @@
 const fs = require('fs').promises;
 
-
-//0x434C49434B
-
+// now, find the amount of time the wheel pass by '0' (not only stop at).
 
 // read file input for get instructions.
 async function readFileAttachedDocument(){

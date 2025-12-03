@@ -1,5 +1,10 @@
 const fs = require('fs').promises;
 
+// wheel numered from 0 to 99, with a cursor indicated on when number it is (like a wheel bank security).
+// start a number 50.
+// when past over 99 or under 0, comme back at opisite range.
+// follow a list of instruction (like 'R20' or 'L11'), to move the wheel.
+// find the amount of time the wheel stop to '0'.
 
 // read file input for get instructions.
 async function readFileAttachedDocument(){
