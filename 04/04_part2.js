@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 
-//
+// now, include the fact they can remove more scroll when a cell is make empty (by removing by robot).
+// find the new amount of scroll remove in total.
 
 // read file.
 async function readFileInput(){

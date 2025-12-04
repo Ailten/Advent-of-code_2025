@@ -1,6 +1,9 @@
 const fs = require('fs').promises;
 
-//
+// there is a shelf with scroll on it. (place on row and cell).
+// some emplacement have one scroll '@', some have none '.'.
+// the evelator machine can take a scroll on a cell only if there are less than 4 scroll in adjacente place (8 adjaentes places).
+// find how many scroll can be remove.
 
 // read file.
 async function readFileInput(){
