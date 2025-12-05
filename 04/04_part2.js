@@ -94,7 +94,7 @@ async function readFileInput(){
                     countRollCanAxessThisTime++;
 
                     // replace roll.
-                    //gridRoll[y][x] = gridRoll[y][x].replace(new RegExp(`^(?![.@]{8})(?=[.@]{1})(?![.@]{0,})$`), '.');
+                    //gridRoll[y] = gridRoll[y].replace(new RegExp(`^(?![.@]{8})(?=[.@]{1})(?![.@]{0,})$`), '.');
                     gridRoll[y] = gridRoll[y].substring(0, x) + '.' + gridRoll[y].substring(x+1);
 
                 }
