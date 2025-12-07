@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 
-// 
+// now, find how many ingredients is "fresh" (regardless of the ids incredients ask to check).
 
 // folder name.
 const folderName = __filename.split('/').filter(folder => (/^\d{2}$/).test(folder))[0];
