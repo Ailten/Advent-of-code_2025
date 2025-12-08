@@ -25,12 +25,19 @@ async function readFileInput(){
 }
 
 function evalDist(a, b){
-    let difX = Math.abs(a[0] - b[0]);
-    let difY = Math.abs(a[1] - b[1]);
-    let difZ = Math.abs(a[2] - b[2]);
-    difX = Math.sqrt(difX*difX + difY*difY);
-    difX = Math.sqrt(difX*difX + difZ*difZ);
-    return difX;
+    //let difX = Math.abs(a[0] - b[0]);
+    //let difY = Math.abs(a[1] - b[1]);
+    //let difZ = Math.abs(a[2] - b[2]);
+    //difX = Math.sqrt(difX*difX + difY*difY);
+    //difX = Math.sqrt(difX*difX + difZ*difZ);
+    //return difX;
+
+    let difX = (a[0] - b[0]);
+    let difY = (a[1] - b[1]);
+    let difZ = (a[2] - b[2]);
+    let squaredSum = Math.pow(difX, 2) + Math.pow(difY, 2) + Math.pow(difZ, 2);
+    return Math.sqrt(squaredSum);
+
 }
 
 // main execution.
@@ -40,13 +47,36 @@ function evalDist(a, b){
 
     let poss = await readFileInput();
 
+    
+//    poss = [
+//"162,817,812".split(','),
+//"57,618,57".split(','),
+//"906,360,560".split(','),
+//"592,479,940".split(','),
+//"352,342,300".split(','),
+//"466,668,158".split(','),
+//"542,29,236".split(','),
+//"431,825,988".split(','),
+//"739,650,466".split(','),
+//"52,470,668".split(','),
+//"216,146,977".split(','),
+//"819,987,18".split(','),
+//"117,168,530".split(','),
+//"805,96,715".split(','),
+//"346,949,466".split(','),
+//"970,615,88".split(','),
+//"941,993,340".split(','),
+//"862,61,35".split(','),
+//"984,92,344".split(','),
+//"425,690,689".split(','),
+//];
+
+
     // add param conection.
     poss = poss.map(p => {
         return {
             pos: p,
-            //connectToId: -1,
             grpId: -1
-            //dist: Infinity
         };
     });
 
@@ -102,7 +132,10 @@ function evalDist(a, b){
 
     }
 
-    result = circuits
+    //console.log(circuits);
+    //console.log(circuits).map(e => e.map(ee => poss[ee].pos));
+
+    let result = circuits
         .map(e => e.length)
         .sort((a, b) => (a - b) * -1)
         .splice(0, 3)
@@ -111,5 +144,7 @@ function evalDist(a, b){
     console.log(result);
 
     //294 to low.
+    //890568 to big.
+    //180 to low.
 
 })();
