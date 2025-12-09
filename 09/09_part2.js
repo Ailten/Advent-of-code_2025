@@ -1,9 +1,8 @@
 const fs = require('fs').promises;
 
-// you have a list of position (vector2).
-// find the bigest rectangle you can make with two of theese position (as corecter rectangle).
-// return the era of this rectangle.
-// (include the corner in the length of rectangle).
+// now, keep in mind the list of position is linked (by a straig line X or Y) and the last position linked to the first one.
+// find the bigest rectangle (area), who is in the global form.
+// (the forme make a round, but with a rect bar enter in midle).
 
 // folder name.
 const folderName = __filename.split('/').filter(folder => (/^\d{2}$/).test(folder))[0];
@@ -93,22 +92,56 @@ function dist(a, b){
 
     let poss = await readFileInput();
 
-//    poss = [
-//"7,1".split(','),
-//"11,1".split(','),
-//"11,7".split(','),
-//"9,7".split(','),
-//"9,5".split(','),
-//"2,5".split(','),
-//"2,3".split(','),
-//"7,3".split(',')
-//    ];
+    let centerDot = [];
+    let centerDorI = [];
+    for(let i=Math.floor(poss.length*0.4); i<Math.floor(poss.length*0.6); i++){
+        let d = dist(poss[i], poss[0]);
+        if(d < 6000){
+            centerDot.push(poss[i]);
+            centerDorI.push(i);
+        }
+    }
+    console.log(centerDot);
 
     let bigestRect = {
         i1: -1,
         i2: -1,
         air: -1
     };
+    centerDot.forEach((cd, i) => {
+        let isFirst = i === 0;  // match to Y bigest (50% first). 
+        for(let j=(isFirst? Math.ceil(poss.length*0.3): Math.floor(poss.length*0.51)); 
+            j<(isFirst? Math.ceil(poss.length*0.49): Math.floor(poss.length*0.7)); 
+            j++){
+            let pj = poss[j];
+
+            let opositeCorner = [cd[0], pj[1]];
+
+            // if 4 lignes rectangle is crossing one of the lines.
+            let isCrossing = false;
+            poss.forEach((e, i) => {
+                if(isCrossing)
+                    return;
+                let i2 = (i+1)%poss.length;
+                //if(isLineCrossing(cd, opositeCorner, e, poss[i2]) !== null)
+                //    isCrossing = true;
+                if(isLineCrossing(pj, opositeCorner, e, poss[i2]) !== null)
+                    isCrossing = true;
+            });
+            if(isCrossing)
+                continue;
+
+            let air = evalAir(cd, pj);
+            if(air > bigestRect.air){
+                bigestRect.i1 = centerDorI[i];
+                bigestRect.i2 = j;
+                bigestRect.air = air;
+            }
+
+        }
+    });
+
+    /*
     for(let i=0; i<poss.length; i++){
         let p1 = poss[i];
 
@@ -146,13 +179,9 @@ function dist(a, b){
             }
         }
     }
+    */
 
     console.log(`${poss[bigestRect.i1]} - ${poss[bigestRect.i2]}`)
     console.log(bigestRect.air);
-
-    //4748688420 (to low).
-    //4748826374 (v)
-
-    //4748826374  (to height)
 
 })();

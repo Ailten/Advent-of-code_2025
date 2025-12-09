@@ -38,17 +38,6 @@ function evalAir(a, b){
 
     let poss = await readFileInput();
 
-//    poss = [
-//"7,1".split(','),
-//"11,1".split(','),
-//"11,7".split(','),
-//"9,7".split(','),
-//"9,5".split(','),
-//"2,5".split(','),
-//"2,3".split(','),
-//"7,3".split(',')
-//    ];
-
     let bigestRect = {
         i1: -1,
         i2: -1,
@@ -71,8 +60,5 @@ function evalAir(a, b){
 
     console.log(`${poss[bigestRect.i1]} - ${poss[bigestRect.i2]}`)
     console.log(bigestRect.air);
-
-    //4748688420 (to low).
-    //4748826374 (v)
 
 })();
