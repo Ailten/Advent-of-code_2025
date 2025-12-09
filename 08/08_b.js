@@ -1,9 +1,8 @@
 const fs = require('fs').promises;
 
-// you have a list of box position (vetor3).
-// you need to connect boxed closest box by closest box (you can connect two time the same pair of box, but can connect one to another alread connected).
-// make the 1000 first closest connection.
-// now take all group of box that made, and multiply the 3 bigest group (how many box in eatch 3 group).
+// based on a list of vector 3 (pos of box), connect all to another one (the closest).
+// you can connect many to eatch others (as a group).
+// then return the multiplication of the 3 most largest group (the amount of box in group).
 
 // folder name.
 const folderName = __filename.split('/').filter(folder => (/^\d{2}$/).test(folder))[0];
@@ -90,13 +89,11 @@ function evalDist(a, b){
     poss = poss.map(p => {
         return {
             pos: p,
-            closestI: [],
-            //dist: -1,
+            closestI: -1,
+            dist: -1,
             grpId: -1
         };
     });
-
-    let Nclosest = 20;
 
     let circuits = [];
 
@@ -107,19 +104,6 @@ function evalDist(a, b){
         // skip when already connected.
         //if(p.closestI !== -1)
         //    continue;
-
-        poss[i].closestI = poss
-            .filter(e => e !== p)
-            .map((e, i) => {
-                return {
-                    dist: evalDist(p.pos, e.pos),
-                    i: i
-                };
-            })
-            .sort((a, b) => a.dist - b.dist)
-            .splice(0, Nclosest);
-
-        continue;
 
         let closestI2;
         let closestDist = Infinity;
@@ -147,62 +131,33 @@ function evalDist(a, b){
 
     }
 
-    //poss = poss.sort((a, b) => a.dist - b.dist);
+    // order by dist.
+    poss = poss.sort((a, b) => a.dist - b.dist);
 
-    // loop until 1000 connections.
+    // loop on poss.
+    for(let i=0; i<poss.length; i++){
+        let p = poss[i];
+        let p2 = poss[p.closestI];
 
-    let connectionMade = 0;
-    let possOrdered = poss;
-    while(true){
+        // skip if p already set in grp (as p2).
+        if(p.grpId !== -1)
+            continue;
 
-        if(possOrdered[0].closestI.length === 0)
-            throw new Error("all proxi used");
+        if(p2.grpId === -1){  // make a new grp.
 
-        // order by dist.
-        possOrdered = possOrdered.sort((a, b) => a.closestI[0].dist - b.closestI[0].dist);
+            circuits.push([i, p.closestI]);
+            poss[i].grpId = circuits.length - 1;
+            poss[p.closestI].grpId = circuits.length - 1;
+    
+        }else{  // increase existing grp.
 
-        // loop on poss.
-        for(let i=0; i<possOrdered.length; i++){
-            let p = possOrdered[i];
-            let pClosestI = p.closestI[0].i;
-            p.closestI.shift();  // remove.
-            let p2 = poss[pClosestI];
+            circuits[p2.grpId].push(i);
+            poss[i].grpId = p2.grpId;
 
-            // skip if p already set in same grp.
-            if(p.grpId !== -1 && p.grpId === p2.grpId)
-                continue;
-
-            // already in grp but distinct.
-            if(p.grpId !== -1 && p.grpId !== p2.grpId && p2.grpId !== -1){  // merge grp.
-                connectionMade++;
-
-                let grpMovingId = p2.grpId;
-                let grpMoving = circuits[grpMovingId];
-                grpMoving.forEach(e => poss[e].grpId = p.grpId);
-                while(grpMoving.length > 0)
-                    grpMoving.pop();
-
-            }else if(p2.grpId === -1){  // make a new grp.
-                connectionMade++;
-
-                circuits.push([i, pClosestI]);
-                poss[i].grpId = circuits.length - 1;
-                poss[pClosestI].grpId = circuits.length - 1;
-            
-            }else{  // increase existing grp.
-                connectionMade++;
-
-                circuits[p2.grpId].push(i);
-                poss[i].grpId = p2.grpId;
-            }
-
-            if(connectionMade >= 1000)
-                break;
         }
 
-        if(connectionMade >= 1000)
-            break;
     }
+    
 
 /*
     // loop on poss.
@@ -275,8 +230,5 @@ function evalDist(a, b){
 
     //1210 (x).
     //576  (x)
-
-    //77103 (x)
-    //77103 (x)
 
 })();
