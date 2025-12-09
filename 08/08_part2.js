@@ -97,10 +97,17 @@ function dist(a, b){
     // make connection.
     connectionToMake--;
     let connectionMade = 0;
-    while(connectionMade < connectionToMake){
+    let backupConnection = null;
+    while(true){
+
+        // exit.
+        if(grp.find(g => g.length >= 1000) !== undefined){
+            break;
+        }
 
         // get conection closest.
         let currentCo = allConnections[0];
+        backupConnection = currentCo;
         allConnections.shift();
 
         // get both pos.
@@ -142,16 +149,13 @@ function dist(a, b){
 
     }
 
-    console.log(grp
-        .map(e => e.length)
-        .sort((a, b) => (a - b) * -1)
-    );
+    console.log(`${backupConnection.i1} - ${backupConnection.i1}`);
+    console.log(`${poss[backupConnection.i1]} - ${poss[backupConnection.i1]}`);
 
-    let result = grp
-        .map(e => e.length)
-        .sort((a, b) => (a - b) * -1)
-        .splice(0, 3)
-        .reduce((acu, e, i) => acu * e);
+    let result = (
+        poss[backupConnection.i1][0] *
+        poss[backupConnection.i2][0]
+    );
 
     console.log(result);
 
