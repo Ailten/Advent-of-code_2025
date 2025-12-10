@@ -1,9 +1,8 @@
 const fs = require('fs').promises;
 
-// you have a list of box position (vetor3).
-// you need to connect boxed closest box by closest box (you can connect two time the same pair of box, but can connect one to another alread connected).
-// make the 1000 first closest connection.
-// now take all group of box that made, and multiply the 3 bigest group (how many box in eatch 3 group).
+// now, make connection until all are join in one group.
+// then the last connection made, take both position box and multiply theyr both X value.
+// return the result.
 
 // folder name.
 const folderName = __filename.split('/').filter(folder => (/^\d{2}$/).test(folder))[0];
