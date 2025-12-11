@@ -65,7 +65,7 @@ function reverceLight(light, lightToSwitch){
     return output;
 }
 function decreaseVoltage(voltage, voltageToIncrease){
-    return voltage.map((v, i) => v + voltageToIncrease.includes(i)? -1: 0);
+    return voltage.map((v, i) => v + (voltageToIncrease.includes(i)? -1: 0));
 }
 
 //function allButtonMineOne(machine){
@@ -141,8 +141,74 @@ function decreaseVoltage(voltage, voltageToIncrease){
         //    return;
         //}
 
-        let voltageStart = machine.voltage.map(v => v);
+        //const primarNumber = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61];
 
+        let voltageToDecrease = machine.voltage.map(v => v);
+
+        let buttonPressedCount = 0;
+
+        let isNotSolv = false;
+
+        //console.log(`--- ${mi+1}/${machines.length} ---`);
+        //console.log(`    v:{${voltageToDecrease.join(',')}}`);
+
+        // press all button once before.
+        machine.buttons.map((button, i) => {
+            voltageToDecrease = decreaseVoltage(voltageToDecrease, button);
+        });
+        buttonPressedCount += machine.buttons.length;
+
+        while(!voltageToDecrease.every(vtd => vtd === 0)){
+
+            let buttonRated = machine.buttons.map((button, i) => {
+                // if one value go to lower than 0, return null.
+                if(voltageToDecrease.find((vtd, vtdi) => vtd === 0 && button.includes(vtdi)) !== undefined)
+                    return null;
+                // evalue the value priorities.
+                //let valuePriority = button.map(b => voltageToDecrease[b])
+                //let valuePriority = button.map(b => i)
+                let valuePriority = button.map(b => 1)
+                    .reduce((acu, e) => acu + e);
+                return {
+                    button: button,
+                    i: i,
+                    valuePriority: valuePriority
+                };
+            })
+            .filter(e => e !== null)
+            .sort((a, b) => (a.valuePriority - b.valuePriority) * -1);
+
+            if(buttonRated.length === 0){
+                //throw new Error("NO MORE BUTTON");
+                isNotSolv = true;
+                break;
+            }
+
+            let buttonToPress = buttonRated[0];
+
+            //console.log('TEST');
+            //console.log(buttonToPress);
+
+            voltageToDecrease = decreaseVoltage(voltageToDecrease, buttonToPress.button);
+
+            buttonPressedCount++;
+            
+            //console.log(`    bi:(${buttonToPress.i}) b:(${buttonToPress.button.join(',')})`);
+            //console.log(`    v:{${voltageToDecrease.join(',')}}`);
+
+        }
+
+        if(isNotSolv){
+            console.log(`--- ${mi+1}/${machines.length} -- NOT-FOUND`);
+            return;
+        }
+
+        amoutMinOfButton.push(buttonPressedCount);
+        //console.log(`    button pressed:{${buttonPressedCount}}`);
+
+        console.log(`--- ${mi+1}/${machines.length} -- ${buttonPressedCount}`);
+
+        /*
         let tree = machine.buttons.map((button, i) => {
             return {
                 buttonPressed: [i],
@@ -157,29 +223,6 @@ function decreaseVoltage(voltage, voltageToIncrease){
             if(findPath !== undefined){
                 break;
             }
-
-            /*
-            let newTree = [];
-            for(let j=0; j<tree.length; j++){
-                let t = tree[j];
-
-                let newRange = [];
-                for(let k=0; k<machine.buttons.length; k++){
-                    let b = machine.buttons[k];
-
-                    if(t.buttonPressed.includes(k))
-                        continue;
-
-                    newRange.push({
-                        buttonPressed: t.buttonPressed.concat([k]),
-                        lightToSwitch: reverceLight(t.lightToSwitch, b)
-                    });
-                }
-
-                newTree = newTree.concat(newRange);
-            }
-            tree = newTree;
-            */
 
             tree = tree.map((t, ti) => {
                 return machine.buttons.map((button, bi) => {
@@ -203,6 +246,7 @@ function decreaseVoltage(voltage, voltageToIncrease){
         //amoutMinOfButton.push(findPath.buttonPressed);
         
         console.log(`--- ${mi+1}/${machines.length} -- ${findPath.buttonPressed.join(',')}`);
+        */
 
     });
 
