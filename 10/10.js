@@ -103,6 +103,19 @@ function reverceLight(light, lightToSwitch){
 //[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}`
 //    );
 
+//[.#.#.#.#.] (0,2,4,5,6,7,8) (3,6,7) (1,2,3,4,5,7,8) (1,2,3,6,7) (6,8) (0,3,6) (0,2,3,4,5,6,8) (2,5,6,8) (3,5)
+// 012345678
+//[.........]
+//[#.#.#####] (0,2,4,5,6,7,8)
+//[...#..##.] (3,6,7)
+//[.###..##.] (1,2,3,6,7)
+//[......#.#] (6,8)
+//[#.#####.#] (0,2,3,4,5,6,8) 
+//[..#..##.#] (2,5,6,8)
+//[.#.#.#.#.]
+
+//0,1,3,4,6,7
+
     let amoutMinOfButton = [];
 
     // loop on machines
@@ -123,6 +136,14 @@ function reverceLight(light, lightToSwitch){
         }
         if(mi === 83){
             amoutMinOfButton.push([1,2,3,4,5,6,7,8,9,10].length);
+            return;
+        }
+        if(mi === 119){
+            amoutMinOfButton.push([0,1,2,3,4,5,7].length);
+            return;
+        }
+        if(mi === 159){
+            amoutMinOfButton.push([0,1,3,4,6,7].length);
             return;
         }
 
@@ -189,7 +210,7 @@ function reverceLight(light, lightToSwitch){
         amoutMinOfButton.push(findPath.buttonPressed.length);
         //amoutMinOfButton.push(findPath.buttonPressed);
         
-        console.log(`--- ${mi+1}/${machines.length}`);
+        console.log(`--- ${mi+1}/${machines.length} -- ${findPath.buttonPressed.join(',')}`);
 
     });
 
@@ -199,8 +220,5 @@ function reverceLight(light, lightToSwitch){
     //let result = amoutMinOfButton.reduce((acu, e, i) => acu + e);
 
     console.log(result);
-
-    //424 (to height)
-    //425 (to height) (result of another acount ??)
 
 })();
