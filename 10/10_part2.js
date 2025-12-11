@@ -1,13 +1,10 @@
 const fs = require('fs').promises;
 
-// you need to make work a bunch of machines.
-// all machine need to have a specific serie of light one for work ([..#..#]).
-// all machine have button who can press, and who make switch light ((0) (1,2) (2) (0,5)).
-// all machine have a voltage ({2,0,1,0,0,1}), no need for now.
-// find the shortest serie of button to press to make the light match the patern.
-// calcul the amount total off button pressed to make work all machines.
-// (in this example, the machine need 2 push, the button (0,5) (0) (2)).
-// (eatch line of document look like "[..#..#] (0) (1,2) (2) (0,5) {2,0,1,0,0,1}", with other values).
+// now ignore the light part, and use the voltage part.
+// the obectif now is to make the voltage machine matching the voltage counter.
+// eatch button press increase the conter voltage of machine at his indectated range.
+// conter voltage of machine start at 0.
+// conter how many button need to be pressed.
 
 // folder name.
 const folderName = __filename.split('/').filter(folder => (/^\d{2}$/).test(folder))[0];
@@ -67,6 +64,9 @@ function reverceLight(light, lightToSwitch){
     output = output.concat(lightToSwitch.filter(lts => !light.includes(lts)));
     return output;
 }
+function decreaseVoltage(voltage, voltageToIncrease){
+    return voltage.map((v, i) => v + voltageToIncrease.includes(i)? -1: 0);
+}
 
 //function allButtonMineOne(machine){
 //
@@ -124,26 +124,24 @@ function reverceLight(light, lightToSwitch){
         //}
 
         // exeptions.
-        if(mi === 66){
-            amoutMinOfButton.push([0,1,3,4,5,6,7,8,9].length);
-            return;
-        }
-        if(mi === 83){
-            amoutMinOfButton.push([1,2,3,4,5,6,7,8,9,10].length);
-            return;
-        }
-        if(mi === 119){
-            amoutMinOfButton.push([0,1,2,3,4,5,7].length);
-            return;
-        }
-        if(mi === 159){
-            amoutMinOfButton.push([0,1,3,4,6,7].length);
-            return;
-        }
+        //if(mi === 66){
+        //    amoutMinOfButton.push([0,1,3,4,5,6,7,8,9].length);
+        //    return;
+        //}
+        //if(mi === 83){
+        //    amoutMinOfButton.push([1,2,3,4,5,6,7,8,9,10].length);
+        //    return;
+        //}
+        //if(mi === 119){
+        //    amoutMinOfButton.push([0,1,2,3,4,5,7].length);
+        //    return;
+        //}
+        //if(mi === 159){
+        //    amoutMinOfButton.push([0,1,3,4,6,7].length);
+        //    return;
+        //}
 
-        let lightToSwitchStart = machine.light
-            .map((l, li) => (l)? li: null)
-            .filter(l => l !== null);
+        let voltageStart = machine.voltage.map(v => v);
 
         let tree = machine.buttons.map((button, i) => {
             return {
@@ -185,14 +183,14 @@ function reverceLight(light, lightToSwitch){
 
             tree = tree.map((t, ti) => {
                 return machine.buttons.map((button, bi) => {
-                    if(t.buttonPressed.includes(bi))
-                        return null;
+                    //if(t.buttonPressed.includes(bi))
+                    //    return null;
                     return {
                         buttonPressed: t.buttonPressed.concat([bi]),
                         lightToSwitch: reverceLight(t.lightToSwitch, button)
                     }
                 })
-                .filter(e => e !== null);
+                //.filter(e => e !== null);
             })
             .reduce((acu, e, i) => acu.concat(e));
 
