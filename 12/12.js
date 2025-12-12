@@ -150,7 +150,7 @@ function getVariantesOfShape(shape){
     //console.log(data.sapins);
 
     let sapinFeed = 0;
-    data.sapins.forEach(sapin => {
+    data.sapins.forEach((sapin, sapinIndex) => {
 
         // make an empty space.
         let space = [];
@@ -161,25 +161,39 @@ function getVariantesOfShape(shape){
             }
         }
 
-        // eval the most opti shape to place.
-        // -- can not be pause.
-        // -- can be pause and count how much adjacent cel feel maching (embrick).
-        // -- (include rotation shapes).
-        // order.
-        let shapesPriorities = data.shapes.map((shape, shapeIndex) => {
-            
-            let shapeVariantes = getVariantesOfShape(shape);
+        // loop until full feel (or no more shap fiting).
+        while(true){
 
-        });
+            // eval the most opti shape to place.
+            // -- can not be pause.
+            // -- can be pause and count how much adjacent cel feel maching (embrick).
+            // -- (include rotation shapes).
+            // order.
+            let shapesPriorities = data.shapes.map((shape, shapeIndex) => {
 
-        // skip this sapin (can't not fit).
-        if(shapesPriorities.length === 0)
-            return;
+                let shapeVariantes = getVariantesOfShape(shape);
 
-        let shapeOpti = shapesPriorities[0];
+                // TODO get the most opti shapes at the most opti place. (or null).
+                return findMostOptiShape(shapeVariantes, space);
 
-        // place the shapeOpti in space.
-        // TODO.
+            })
+            .filter(e => e !== null);
+
+            // skip this sapin (can't not fit).
+            if(shapesPriorities.length === 0){
+                console.log(`--- ${sapinIndex+1}/${data.sapins.length} --- [X]`);
+                return;
+            }
+
+            let shapeOpti = shapesPriorities
+                .sort((a, b) => (a.valuePriority - b.valuePriority) * -1)[0];
+
+            // place the shapeOpti in space.
+            // reduce the counter shape to place.
+            // verify if counter shape to place is zero (then break while).
+            // TODO.
+
+        }
 
         // increase counter.
         sapinFeed++;
