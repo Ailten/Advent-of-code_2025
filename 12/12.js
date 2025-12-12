@@ -43,7 +43,7 @@ async function readFileInput(dataStr = undefined){
         }
     }
 
-    let sapin = output.map(e => {
+    let sapins = output.map(e => {
         let nums = (e).match(/\d{1,}/g).map(e => Number(e));
         return {
             size: nums.slice(0, 2),
@@ -53,7 +53,7 @@ async function readFileInput(dataStr = undefined){
 
     return {
         shapes: shapes,
-        sapin: sapin
+        sapins: sapins
     };
 }
 
@@ -102,7 +102,40 @@ async function readFileInput(dataStr = undefined){
     //*/
 
     console.log(data.shapes);
-    console.log(data.sapin);
+    console.log(data.sapins);
+
+    let sapinFeed = 0;
+    data.sapins.forEach(sapin => {
+
+        // make an empty space.
+        let space = [];
+        for(let y=0; y<sapin.size[0]; y++){
+            space.push([]);
+            for(let x=0; x<sapin.size[1]; x++){
+                space[space.length-1].push(false);
+            }
+        }
+
+        // eval the most opti shape to place.
+        // -- can not be pause.
+        // -- can be pause and count how much adjacent cel feel maching (embrick).
+        // -- (include rotation shapes).
+        // order.
+        let shapesPriorities = [];  // TODO.
+
+        // skip this sapin (can't not fit).
+        if(shapesPriorities.length === 0)
+            return;
+
+        let shapeOpti = shapesPriorities[0];
+
+        // place the shapeOpti in space.
+        // TODO.
+
+        // increase counter.
+        sapinFeed++;
+
+    });
 
 
 })();
