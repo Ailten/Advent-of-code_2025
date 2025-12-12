@@ -57,6 +57,51 @@ async function readFileInput(dataStr = undefined){
     };
 }
 
+function getVariantesOfShape(shape){
+    let output = [];
+
+    // mirror.
+    for(let x=0; x<2; x++){
+        for(let y=0; y<2; y++){
+            
+            for(let i=(x===0? 0: shape.length-1);(x===0? x<shape.length: x>=0); x+=(x===0? 1: -1))
+                for(let j=(y===0? 0: shape[i].length-1);(y===0? j<shape[i].length: j>=0); j+=(y===0? 1: -1))
+                    output.push([
+                        [shape[i][j], shape[i][j], shape[i][j]],
+                        [shape[i][j], shape[i][j], shape[i][j]],
+                        [shape[i][j], shape[i][j], shape[i][j]]
+                    ]);
+        }
+    }
+
+    // rotate
+    return output.map(e => {
+        return [
+            [
+                [shape[0][0], shape[0][1], shape[0][2]],
+                [shape[1][0], shape[1][1], shape[1][2]],
+                [shape[2][0], shape[2][1], shape[2][2]]
+            ],
+            [
+                [shape[2][0], shape[1][0], shape[0][0]],
+                [shape[2][1], shape[1][1], shape[0][1]],
+                [shape[2][2], shape[1][2], shape[0][2]]
+            ],
+            [
+                [shape[2][2], shape[2][1], shape[2][0]],
+                [shape[1][2], shape[1][1], shape[1][0]],
+                [shape[0][2], shape[0][1], shape[0][0]]
+            ],
+            [
+                [shape[0][2], shape[1][2], shape[2][2]],
+                [shape[0][1], shape[1][1], shape[2][1]],
+                [shape[0][0], shape[1][0], shape[2][0]]
+            ]
+        ];
+    })
+    .reduce((acu, e, i) => acu.concat(e));
+}
+
 (async () => {
 
     console.log(`--- exo ${folderName} ---`);
@@ -101,8 +146,8 @@ async function readFileInput(dataStr = undefined){
     );
     //*/
 
-    console.log(data.shapes);
-    console.log(data.sapins);
+    //console.log(data.shapes);
+    //console.log(data.sapins);
 
     let sapinFeed = 0;
     data.sapins.forEach(sapin => {
@@ -121,7 +166,11 @@ async function readFileInput(dataStr = undefined){
         // -- can be pause and count how much adjacent cel feel maching (embrick).
         // -- (include rotation shapes).
         // order.
-        let shapesPriorities = [];  // TODO.
+        let shapesPriorities = data.shapes.map((shape, shapeIndex) => {
+            
+            let shapeVariantes = getVariantesOfShape(shape);
+
+        });
 
         // skip this sapin (can't not fit).
         if(shapesPriorities.length === 0)
