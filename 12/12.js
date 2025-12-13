@@ -102,6 +102,93 @@ function getVariantesOfShape(shape){
     .reduce((acu, e, i) => acu.concat(e));
 }
 
+function findMostOptiShape(shapes, space, shapeIndex){
+    let mostOpti = {
+        shape: null,
+        pos: null,
+        score: Number.NEGATIVE_INFINITY,
+        indexShape: shapeIndex
+    };
+
+    shapes.forEach(shape => {
+
+        // brows all emplacement in space.
+        for(let y=0; y<space.length-2; y++){
+            for(let x=0; x<space[0].length-2; x++){
+                
+                let currentScore = 0;
+                let isShapCanFit = true;
+
+                // brows square in shape.
+                for(let y2=0; y2<shape.length; y2++){
+                    for(let x2=0; x2<shape.length; x2++){
+                        
+                        // skip square empty.
+                        if(!shape[y2][x2])
+                            continue;
+
+                        // if a square shape is busy in space.
+                        if(space[y+y2][x+x2]){
+                            isShapCanFit = false;
+                            break;
+                        }
+
+                        // try square adjacent.
+                        for(let y3=-1; y3<2; y3+=2){
+                            for(let x3=-1; x3<2; x3+=2){
+                                let _y = y2+y3;
+                                let _x = x2+x3;
+
+                                // if adjacent square is already busy in the shape (then do not score).
+                                if(
+                                    (_y >= 0 || _y <= shape.lenght) &&
+                                    (_x >= 0 || _x <= shape[_y].lenght) &&
+                                    (shape[_y][_x])
+                                ){
+                                    continue;
+                                }
+                                
+                                _y += y;
+                                _x += x;
+                                let isInSpace = (
+                                    (_y >= 0 || _y <= space.lenght) &&
+                                    (_x >= 0 || _x <= space[_y].lenght)
+                                );
+
+                                // incrase score (if square is adjacent a border or another square placed).
+                                if(
+                                    (!isInSpace) ||
+                                    (space[_y][_x])
+                                ){
+                                    currentScore++;
+                                }
+
+                            }
+                        }
+
+                    }
+                    if(!isShapCanFit)
+                        break;
+                }
+
+                // eval score.
+                if(isShapCanFit && currentScore > mostOpti.score){
+                    mostOpti.score = currentScore;
+                    mostOpti.shape = shape;
+                    mostOpti.pos = [x, y];
+                }
+
+            }
+        }
+
+    });
+
+    if(mostOpti.shape === null)
+        return null;
+
+    return mostOpti;
+}
+
 (async () => {
 
     console.log(`--- exo ${folderName} ---`);
@@ -165,17 +252,12 @@ function getVariantesOfShape(shape){
         while(true){
 
             // eval the most opti shape to place.
-            // -- can not be pause.
-            // -- can be pause and count how much adjacent cel feel maching (embrick).
-            // -- (include rotation shapes).
-            // order.
             let shapesPriorities = data.shapes.map((shape, shapeIndex) => {
 
                 let shapeVariantes = getVariantesOfShape(shape);
 
                 // TODO get the most opti shapes at the most opti place. (or null).
-                return findMostOptiShape(shapeVariantes, space);
-
+                return findMostOptiShape(shapeVariantes, space, shapeIndex);
             })
             .filter(e => e !== null);
 
@@ -185,18 +267,33 @@ function getVariantesOfShape(shape){
                 return;
             }
 
+            // get the most opti shape in all valid brows.
             let shapeOpti = shapesPriorities
                 .sort((a, b) => (a.valuePriority - b.valuePriority) * -1)[0];
 
             // place the shapeOpti in space.
+            shapeOpti.shape.forEach((shapeY, y) => {
+                shapeY.forEach((shapeX, x) => {
+                    let _x = shapeOpti.pos[0] + x;
+                    let _y = shapeOpti.pos[1] + y;
+                    space[_y][_x] = true;
+                })
+            });
+
             // reduce the counter shape to place.
+            sapin.shapeToFit[shapeOpti.indexShape] = sapin.shapeToFit[shapeOpti.indexShape] - 1;
+
             // verify if counter shape to place is zero (then break while).
-            // TODO.
+            if(sapin.shapeToFit.every(e => e === 0)){
+                console.log(`--- ${sapinIndex+1}/${data.sapins.length} --- [V]`);
+
+                // increase counter.
+                sapinFeed++;
+                
+                return;
+            }
 
         }
-
-        // increase counter.
-        sapinFeed++;
 
     });
 
